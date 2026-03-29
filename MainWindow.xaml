@@ -110,8 +110,20 @@
             <TextBlock Text="Cetak Marker Crystal" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
         </StackPanel>
 
+        <!-- Status Alert -->
+        <Border Grid.Row="1" x:Name="StatusAlertBorder" Background="#FFF3CD" BorderBrush="#FFC107" 
+                BorderThickness="2" CornerRadius="8" Padding="15" Margin="0,0,0,15" Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                <StackPanel>
+                    <TextBlock x:Name="AlertTitleTextBlock" Text="Peringatan" FontSize="14" FontWeight="Bold" Foreground="#856404"/>
+                    <TextBlock x:Name="AlertMessageTextBlock" Text="" FontSize="12" Foreground="#856404" Margin="0,3,0,0"/>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
         <!-- Status Info -->
-        <Border Grid.Row="1" Background="#F0F8FF" BorderBrush="#4169E1" 
+        <Border Grid.Row="1" x:Name="StatusInfoBorder" Background="#F0F8FF" BorderBrush="#4169E1" 
                 BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,15">
             <StackPanel>
                 <TextBlock Text="Status:" FontSize="12" FontWeight="Bold" Foreground="#4169E1"/>
