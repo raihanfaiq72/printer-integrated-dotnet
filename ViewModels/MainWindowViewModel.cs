@@ -88,7 +88,8 @@ namespace marker_dotnet.ViewModels
 
             if (!_debugService.IsDebugMode && !_printerService.CheckPrinterAvailable())
             {
-                ShowAlert("Printer Tidak Ditemukan", "Printer 'printer_label' tidak terinstall. Pastikan printer terhubung dan nama benar.");
+                var config = marker_dotnet.Models.ConfigService.GetConfig();
+                ShowAlert("Printer Tidak Ditemukan", $"Printer '{config.PrinterName}' tidak terinstall. Pastikan printer terhubung dan nama benar.");
                 return;
             }
 
@@ -158,7 +159,7 @@ namespace marker_dotnet.ViewModels
             }
         }
 
-        public void CheckPrinterStatus()
+        private void CheckPrinterStatus()
         {
             if (_debugService.IsDebugMode)
             {
@@ -169,7 +170,8 @@ namespace marker_dotnet.ViewModels
 
             if (!_printerService.CheckPrinterAvailable())
             {
-                ShowAlert("Printer Tidak Ditemukan", "Printer 'printer_label' tidak terinstall. Pastikan printer terhubung dan nama benar.");
+                var config = marker_dotnet.Models.ConfigService.GetConfig();
+                ShowAlert("Printer Tidak Ditemukan", $"Printer '{config.PrinterName}' tidak terinstall. Pastikan printer terhubung dan nama benar.");
             }
             else
             {

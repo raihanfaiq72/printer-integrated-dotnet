@@ -5,14 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using marker_dotnet.Models;
 using marker_dotnet.Interfaces;
+using Newtonsoft.Json;
 
 namespace marker_dotnet.Services
 {
     public class ApiService : IApiService
     {
-        private static readonly string API_URL = "https://api-marker.crystalclean.co.id/api/get-print-batch-data";
-        private static readonly string API_URL_STATUS = "https://api-marker.crystalclean.co.id/api";
+        private string _apiUrl;
+        private string _apiUrlStatus;
         private static readonly HttpClient httpClient = new HttpClient();
+
+        public ApiService()
+        {
+            LoadConfig();
+        }
+
+        private void LoadConfig()
+        {
+            var config = ConfigService.GetConfig();
+            _apiUrl = config.ApiUrl;
+            _apiUrlStatus = config.ApiUrlStatus;
+        }
 
         static ApiService()
         {
@@ -32,7 +45,7 @@ namespace marker_dotnet.Services
                 var json = JsonConvert.SerializeObject(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync(API_URL, content);
+                var response = await httpClient.PostAsync(_apiUrl, content);
                 var responseContent = await response.Content.ReadAsStringAsync();
 
                 if (!response.IsSuccessStatusCode)
@@ -69,7 +82,7 @@ namespace marker_dotnet.Services
                 var json = JsonConvert.SerializeObject(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync($"{API_URL_STATUS}/update-status", content);
+                var response = await httpClient.PostAsync($"{_apiUrlStatus}/update-status", content);
             }
             catch (Exception ex)
             {

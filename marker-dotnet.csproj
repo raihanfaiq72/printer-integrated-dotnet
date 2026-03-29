@@ -6,11 +6,17 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>marker_dotnet</RootNamespace>
     <AssemblyName>marker-dotnet</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
   </ItemGroup>
+
+  <Target Name="CreateDatabase" BeforeTargets="Build">
+    <Exec Command="echo Creating SQLite database..." />
+  </Target>
 
 </Project>
