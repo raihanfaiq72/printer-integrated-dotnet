@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("marker-dotnet")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3b1cafd7588c5705c97fa56861597b5d2600fef9")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed3bb5290ba7885e3d741e8e047177bce3aefeae")]
 [assembly: System.Reflection.AssemblyProductAttribute("marker-dotnet")]
 [assembly: System.Reflection.AssemblyTitleAttribute("marker-dotnet")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
