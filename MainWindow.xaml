@@ -1,0 +1,172 @@
+﻿<Window x:Class="marker_dotnet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:marker_dotnet"
+        mc:Ignorable="d"
+        Title="Cetak Marker Crystal" Height="500" Width="350" 
+        WindowStartupLocation="CenterScreen" Background="White" ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Style x:Key="NumberButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#F5F5F5"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#EEEEEE"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ClearButton" TargetType="Button" BasedOn="{StaticResource NumberButton}">
+            <Setter Property="Background" Value="#FF4444"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#CC0000"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF6666"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="BackspaceButton" TargetType="Button" BasedOn="{StaticResource NumberButton}">
+            <Setter Property="Background" Value="#FFD700"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="BorderBrush" Value="#FFC700"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFE066"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <Style x:Key="PrintButton" TargetType="Button">
+            <Setter Property="Background" Value="#808080"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#606060"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="8"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="🖨️" FontSize="24" HorizontalAlignment="Center"/>
+                                <TextBlock Text="{TemplateBinding Content}" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#909090"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="#707070"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,20">
+            <TextBlock Text="🖨️" FontSize="24" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <TextBlock Text="Cetak Marker Crystal" FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
+        </StackPanel>
+
+        <!-- Instruction -->
+        <TextBlock Grid.Row="1" Text="Masukkan jumlah marker yang ingin dicetak" 
+                  FontSize="14" HorizontalAlignment="Center" Margin="0,0,0,20" 
+                  Foreground="#666666"/>
+
+        <!-- Display -->
+        <Border Grid.Row="2" Background="#F8F8F8" BorderBrush="#E0E0E0" 
+                BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,20">
+            <TextBlock x:Name="DisplayTextBox" Text="0" FontSize="36" FontWeight="Light" 
+                      TextAlignment="Right" VerticalAlignment="Center" Foreground="Black"/>
+        </Border>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Number Pad -->
+            <Grid Grid.Column="0" Margin="0,0,10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                
+                <!-- Row 1: 7, 8, 9, C -->
+                <Button Grid.Row="0" Grid.Column="0" Content="7" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="0" Grid.Column="1" Content="8" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="0" Grid.Column="2" Content="9" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                
+                <!-- Row 2: 4, 5, 6 -->
+                <Button Grid.Row="1" Grid.Column="0" Content="4" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="1" Grid.Column="1" Content="5" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="1" Grid.Column="2" Content="6" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                
+                <!-- Row 3: 1, 2, 3 -->
+                <Button Grid.Row="2" Grid.Column="0" Content="1" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="2" Grid.Column="1" Content="2" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="2" Grid.Column="2" Content="3" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                
+                <!-- Row 4: 0, Backspace -->
+                <Button Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Content="0" Style="{StaticResource NumberButton}" Click="DigitButton_Click"/>
+                <Button Grid.Row="3" Grid.Column="2" Content="⌫" Style="{StaticResource BackspaceButton}" Click="BackspaceButton_Click"/>
+            </Grid>
+
+            <!-- Side Buttons -->
+            <StackPanel Grid.Column="1">
+                <Button Content="C" Style="{StaticResource ClearButton}" Height="60" Margin="0,0,0,10" Click="ClearButton_Click"/>
+                <Button Content="Cetak" Style="{StaticResource PrintButton}" Height="120" Click="PrintButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

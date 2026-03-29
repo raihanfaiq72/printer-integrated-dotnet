@@ -1,0 +1,8 @@
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker-dotnet.csproj.AssemblyReference.cache
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\MainWindow.g.cs
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\App.g.cs
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker-dotnet_MarkupCompile.cache
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker-dotnet_MarkupCompile.lref
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker_dotnet.Properties.Resources.resources
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker-dotnet.csproj.GenerateResource.cache
+C:\Project\marker-dotnet\marker-dotnet\obj\Debug\marker-dotnet.csproj.CoreCompileInputs.cache
