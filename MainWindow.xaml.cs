@@ -77,6 +77,14 @@ namespace marker_dotnet
                 _viewModel.ClearDisplay();
                 e.Handled = true;
             }
+            else if (e.Key == Key.D7 || e.Key == Key.NumPad7)
+            {
+                // Check for debug mode toggle
+                if (_viewModel.CheckDebugToggle())
+                {
+                    e.Handled = true;
+                }
+            }
         }
     }
 }

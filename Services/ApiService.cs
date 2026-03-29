@@ -25,6 +25,17 @@ namespace marker_dotnet.Services
             var config = ConfigService.GetConfig();
             _apiUrl = config.ApiUrl;
             _apiUrlStatus = config.ApiUrlStatus;
+            
+            // Validate URLs
+            if (string.IsNullOrEmpty(_apiUrl) || !Uri.TryCreate(_apiUrl, UriKind.Absolute, out _))
+            {
+                _apiUrl = "https://api-marker.crystalclean.co.id/api/get-print-batch-data";
+            }
+            
+            if (string.IsNullOrEmpty(_apiUrlStatus) || !Uri.TryCreate(_apiUrlStatus, UriKind.Absolute, out _))
+            {
+                _apiUrlStatus = "https://api-marker.crystalclean.co.id/api";
+            }
         }
 
         static ApiService()

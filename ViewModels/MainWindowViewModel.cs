@@ -35,11 +35,29 @@ namespace marker_dotnet.ViewModels
             CheckPrinterStatus();
         }
 
+        public bool CheckDebugToggle()
+        {
+            return _debugService.CheckSecretCode("7");
+        }
+
         public void ProcessDigitInput(string digit)
         {
             if (string.IsNullOrEmpty(digit) || digit.Length != 1) return;
 
-            _debugService.CheckSecretCode(digit);
+            // Check for debug mode toggle
+            if (_debugService.CheckSecretCode(digit))
+            {
+                // Debug mode toggled, update UI
+                if (_debugService.IsDebugMode)
+                {
+                    EnableDebugMode();
+                }
+                else
+                {
+                    DisableDebugMode();
+                }
+                return;
+            }
 
             if (_isNewNumber && digit == "0") return;
 

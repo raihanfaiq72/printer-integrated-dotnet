@@ -82,11 +82,14 @@ namespace marker_dotnet
                 
                 if (result == MessageBoxResult.Yes)
                 {
-                    Application.Current.Shutdown();
+                    this.DialogResult = false;
+                    this.Close();
                 }
+                // Jika No, tetap di setup window
             }
             else
             {
+                // Bukan first run, cukup close saja
                 this.DialogResult = false;
                 this.Close();
             }

@@ -14,6 +14,16 @@ namespace marker_dotnet
 
             try
             {
+                // Development mode - skip setup untuk testing
+                #if DEBUG
+                var mainWindow = new MainWindow();
+                var config = ConfigService.GetConfig();
+                mainWindow.Title = $"[DEBUG] {config.ProgramName}";
+                mainWindow.Show();
+                return;
+                #endif
+
+                // Production mode - normal flow
                 if (ConfigService.IsFirstRun())
                 {
                     var setupWindow = new SetupWindow();
@@ -24,10 +34,11 @@ namespace marker_dotnet
                     }
                 }
 
-                var mainWindow = new MainWindow();
-                var config = ConfigService.GetConfig();
-                mainWindow.Title = config.ProgramName;
-                mainWindow.Show();
+                // Konfigurasi sudah ada, langsung buka main window
+                var mainWin = new MainWindow();
+                var appConfig = ConfigService.GetConfig();
+                mainWin.Title = appConfig.ProgramName;
+                mainWin.Show();
             }
             catch (Exception ex)
             {

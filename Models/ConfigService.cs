@@ -79,6 +79,16 @@ namespace marker_dotnet.Models
             
             if (reader.Read())
             {
+                DateTime installedDate = DateTime.Now;
+                if (!reader.IsDBNull(5))
+                {
+                    string dateStr = reader.GetString(5);
+                    if (!string.IsNullOrEmpty(dateStr) && dateStr != "1")
+                    {
+                        DateTime.TryParse(dateStr, out installedDate);
+                    }
+                }
+
                 return new AppConfig
                 {
                     ProgramName = reader.GetString(0),
@@ -86,7 +96,7 @@ namespace marker_dotnet.Models
                     ApiUrl = reader.GetString(2),
                     ApiUrlStatus = reader.GetString(3),
                     IsConfigured = reader.GetBoolean(4),
-                    InstalledDate = DateTime.Parse(reader.GetString(5))
+                    InstalledDate = installedDate
                 };
             }
 
