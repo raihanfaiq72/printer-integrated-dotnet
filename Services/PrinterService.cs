@@ -1,10 +1,11 @@
 using System;
 using System.Drawing.Printing;
 using System.Runtime.InteropServices;
+using marker_dotnet.Interfaces;
 
 namespace marker_dotnet.Services
 {
-    public class PrinterService
+    public class PrinterService : IPrinterService
     {
         private const string PRINTER_NAME = "printer_label";
 
@@ -40,7 +41,7 @@ namespace marker_dotnet.Services
             public string pDataType;
         }
 
-        public static bool CetakMarker(string invoice, int totalMarkers)
+        public bool CetakMarker(string invoice, int totalMarkers)
         {
             IntPtr hPrinter = IntPtr.Zero;
             DOCINFOA docInfo = new DOCINFOA();
@@ -83,7 +84,6 @@ namespace marker_dotnet.Services
                     WriteText(hPrinter, markerCount + "\n");
 
                     WriteRawBytes(hPrinter, resetCommand);
-
                     WriteRawBytes(hPrinter, feedCommand);
 
                     if (!EndPagePrinter(hPrinter))
@@ -137,7 +137,7 @@ namespace marker_dotnet.Services
             WriteRawBytes(hPrinter, bytes);
         }
 
-        public static (string markerCode, string markerCount) GenerateMarkerCode(string invoice, int index, int total)
+        public (string markerCode, string markerCount) GenerateMarkerCode(string invoice, int index, int total)
         {
             string baseCode = invoice.Replace("-", "");
 
@@ -147,7 +147,7 @@ namespace marker_dotnet.Services
             );
         }
 
-        public static bool CheckPrinterAvailable()
+        public bool CheckPrinterAvailable()
         {
             foreach (string printerName in PrinterSettings.InstalledPrinters)
             {
