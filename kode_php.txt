@@ -1,0 +1,167 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
+use Mike42\Escpos\CapabilityProfile;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\DB;
+use Exception;
+
+// Polyfill for IntlBreakIterator if not available
+if (!class_exists('IntlBreakIterator')) {
+    class IntlBreakIterator {
+        public static function createWordInstance($locale = null) {
+            return new self();
+        }
+        
+        public function setText($text) {
+            return true;
+        }
+        
+        public function first() {
+            return 0;
+        }
+        
+        public function next() {
+            return false;
+        }
+    }
+}
+
+class CetakController extends Controller
+{
+    public function index()
+    {
+        return view('Cetak.Index');
+    }
+
+    public function crystal()
+    {
+        return view('Cetak.CetakCrystal');
+    }
+    
+    public function hotel()
+    {
+        return view('errors.404');
+    }
+
+    const API_URL = "https://api-marker.crystalclean.co.id/api/get-print-batch-data";
+    const API_URL_STATUS = "https://api-marker.crystalclean.co.id/api";
+    const PRINTER_NAME = "printer_label";
+
+    public function kirimPermintaanCetak(Request $request)
+    {
+        try {
+            $request->validate([
+                'jumlah_marker_diminta' => 'required|integer|min:1',
+                'device' => 'required|string|in:desktop,mobile'
+            ]);
+
+            $response = Http::timeout(30)->post(self::API_URL, [
+                'jumlah_marker_diminta' => $request->jumlah_marker_diminta,
+                'device' => $request->device
+            ]);
+
+            $data = $response->json();
+
+            if (!$response->successful() || !$data['success']) {
+                throw new Exception($data['message'] ?? 'Gagal memproses permintaan cetak dari API');
+            }
+
+            $invoice = $data['invoice'];
+            $jumlahCetak = $request->jumlah_marker_diminta;
+
+            $this->cetakMarker($invoice, $jumlahCetak);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil Mencetak',
+                'invoice' => $invoice
+            ]);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (Exception $e) {
+            \Log::error('Print request error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal Mencetak: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    private function cetakMarker($invoice, $totalMarkers)
+    {
+        try {
+            ob_start();
+            $profile = CapabilityProfile::load("default");
+            $connector = new WindowsPrintConnector(self::PRINTER_NAME);
+            $printer = new Printer($connector, $profile);
+
+            // Loop asli
+            for ($i = 0; $i <= $totalMarkers; $i++) {
+                list($markerCode, $markerCount) = $this->generateMarkerCode($invoice, $i, $totalMarkers);
+
+                // Pengaturan printer asli
+                $printer->setJustification(Printer::JUSTIFY_CENTER);
+                $printer->selectPrintMode(Printer::MODE_EMPHASIZED | Printer::MODE_DOUBLE_HEIGHT | Printer::MODE_DOUBLE_WIDTH);
+                $printer->setDoubleStrike(false);
+                $printer->text($markerCode . "\n");
+                $printer->text($markerCount . "\n");
+                $printer->feed(2);
+                
+                $connector->write("\x1bi");
+
+                ob_flush();
+                flush();
+            }
+
+            $printer->cut(Printer::CUT_PARTIAL,10);
+            $printer->close();
+            ob_end_clean();
+
+            Http::post(self::API_URL_STATUS . '/update-status', [
+                'invoice' => $invoice,
+                'status' => 'completed'
+            ]);
+
+        } catch (Exception $e) {
+            ob_end_clean();
+            Http::post(self::API_URL_STATUS . '/update-status', [
+                'invoice' => $invoice,
+                'status' => 'failed',
+                'error_message' => $e->getMessage()
+            ]);
+            throw $e;
+        }
+    }
+
+    /**
+     * =======================================================
+     * LOGIKA FINAL: TIDAK PAKAI 'N', LANGSUNG IKUTI INVOICE
+     * =======================================================
+     */
+    private function generateMarkerCode($invoice, $index, $total)
+    {
+        // Langsung hapus karakter '-' dari string invoice.
+        // Contoh: "HT-0817-003" akan menjadi "HT0817003"
+        $baseCode = str_replace('-', '', $invoice);
+
+        // Penomoran asli (dimulai dari 0)
+        return [
+            $baseCode . '-' . $index, // Hasil: "HT0817003-0", "HT0817003-1", dst.
+            $index . '/' . $total    // Hasil: "0/10", "1/10", dst.
+        ];
+    }
+}
